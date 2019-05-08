@@ -1,0 +1,16 @@
+1	ga_project_number
+2	skytem_job_number
+3	fiducial
+4	line
+5	easting
+6	northing
+7	elevation
+8	magnetics_tmi
+9	residual
+10	frame_height_filtered
+11	frame_height_inverted
+12	depth_of_investigation
+13-42	elevation_top
+43-72	conductivity_mSm
+73-102	conductivity_mSm_masked
+103-132	conductivity_uncertainty

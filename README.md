@@ -6,6 +6,13 @@ Feedback, suggestions or contributions will be gratefully accepted.
 License
 The content of this repository is licensed for use under the Apache 2.0 License.
 
+
+Instructions for using this are here:
+
+https://docs.google.com/document/d/1Elv19V3QclRzz9MhVqGacGvdHT4xERTr6etYUTFTpcA/edit?usp=sharing
+
+Known bugs include the software throwing errors if the AEM line is too long (e.g. AusAEM survey). This is inherent segy and hence the lines will need to be chunked before conversion.
+
 Contacts
 
 Neil Symington

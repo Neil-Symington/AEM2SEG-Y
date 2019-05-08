@@ -1,0 +1,1 @@
+python ..\aem2segy\conversion.py batch_conversion.con
