@@ -100,10 +100,7 @@ for file in glob.glob(os.path.join(AEM_dir, line_no)):
         
         # Retrieve the data from the asci file
 
-        if header_file is not None:
-            data_dict = aem2segy.parse_AEM(file, var_dict, header_file = header_file)
-        else:
-            data_dict = aem2segy.parse_AEM(file, var_dict)
+        data_dict = aem2segy.parse_AEM(file, var_dict)
         
         # Define numpy array for continuous, interpolated conductivity data
         
@@ -116,6 +113,8 @@ for file in glob.glob(os.path.join(AEM_dir, line_no)):
             interp_dat = aem2segy.interpolate_layer_data(data_dict['depth_top'][i],  z_new,
                                                          data_dict['data'][i], data_dict['elevation'][i],
                                                          max_depth, datum)
+
+
             # If flagged then mask all data below the doi
             if aem2segy.to_bool(var_dict['doi_mask']) == True:
                 try:

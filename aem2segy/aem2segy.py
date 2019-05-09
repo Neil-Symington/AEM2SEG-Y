@@ -212,16 +212,20 @@ def parse_AEM(AEM_file, var_dict):
     # Get the data cols
     cols = [int(x) - t for x in col_dict['data']]
 
+
+
     data_dict['data'] = np.loadtxt(AEM_file, usecols=cols)
+
     
     # If data is resistivity, convert to conductivity
+
     if to_bool(var_dict['resistivity']):
 
         data_dict['data'] = 1./data_dict['data']
     
     # Multiply data by the scaling factor 
 
-        data_dict['data'] = data_dict['data'] * np.float(var_dict['scaling_factor'])
+    data_dict['data'] = data_dict['data'] * np.float(var_dict['scaling_factor'])
 
     # If the depth tops are in the file extract
 
