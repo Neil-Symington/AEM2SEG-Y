@@ -1,5 +1,5 @@
 # AEM2SEG-Y
-The AEM2SEG-Y package is a python library that converts AEM conductivity line data into the SEG-Y format, whcih is commonly used for storing geophysical datasets such as reflection seismic or GOR. This allows AEM conductivity models to be imported visualised and ultimately interpreted within seismic software.
+The AEM2SEG-Y package is a python library that converts AEM conductivity line data into the SEG-Y format, which is commonly used for storing geophysical datasets such as reflection seismic or GOR. This allows AEM conductivity models to be imported visualised and ultimately interpreted within seismic software.
 
 Feedback, suggestions or contributions will be gratefully accepted.
 
