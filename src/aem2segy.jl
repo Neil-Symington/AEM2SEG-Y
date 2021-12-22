@@ -1,6 +1,4 @@
 using SegyIO
-using Statistics
-using PyPlot
 using DelimitedFiles
 
 ##
