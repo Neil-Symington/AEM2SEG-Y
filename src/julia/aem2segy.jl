@@ -4,20 +4,21 @@ using DelimitedFiles
 ##
 # choose the vertical resampling interval
 yres = 4.0;
-max_depth = 400.;
+max_depth = 500.;
 
 ##
-infile = raw"C:\Users\u77932\Documents\MORPH\data\AEM\AusAEM_2020\earaheedy_desertStrip\run.01\ref.01\inversion.output.dat";
-outdir = raw"C:\Users\u77932\Documents\MORPH\data\AEM\AusAEM_2020\segy";
+infile = raw"C:\Users\u77932\Documents\LEB\data\AEM\Frome\galei\lines\Frome_LEB_galei.dat";
+outdir = raw"C:\Users\u77932\Documents\LEB\data\AEM\Frome\galei\segy";
 
-inversion_output = readdlm(infile);
+inversion_output = readdlm(infile, Float64);
 
 # define column numbers
 easting_col = 7;
 northing_col = 8;
 elevation_col = 9;
-conductivity_cols = [23,52] #ranger for 30 layer model;
-thickness_cols = [53,82];
+conductivity_cols = [24,53] #ranger for 30 layer model;
+thickness_cols = [54,83];
+#layer_top_elevation_cols = [14 43]
 line_col = 5;
 
 lines = round.(Int, inversion_output[:,line_col]);
@@ -44,10 +45,10 @@ function line2segy(line_number)
 
     grid_elevations = collect(range(ymax, ymin, length = Int(ceil((ymax - ymin)/yres))))
 
-
     # get conductivity
     sigma = transpose(inversion_output[line_inds,conductivity_cols[1]:conductivity_cols[2]])
     thickness = transpose(inversion_output[line_inds,thickness_cols[1]:thickness_cols[2]])
+    #layer_top_elevation = inversion_output[line_inds,layer_top_elevation_cols[1]:layer_top_elevation_cols[2]]
 
     ## get coordinates
 
@@ -61,6 +62,7 @@ function line2segy(line_number)
 
         layer_top_elev = elevations[i] * ones(size(thickness)[1])
         layer_top_elev[2:end] = layer_top_elev[2:end] - cumsum(thickness[1:end-1,i])
+        #layer_top_elev = layer_top_elevation[i,:]
         sigma_trace = sigma[:,i]
         # iterate through our layers
         for j in 1:(length(layer_top_elev) - 1)
@@ -71,8 +73,6 @@ function line2segy(line_number)
     ## try writing these out in depth space
 
     block = SeisBlock(interpolated)
-
-    ##
 
     set_header!(block, "SourceX", round.(Int, easting))
     set_header!(block, "SourceY", round.(Int, northing))
@@ -91,5 +91,6 @@ function line2segy(line_number)
 end
 ##
 for l in unique(lines)
+
     line2segy(l)
 end

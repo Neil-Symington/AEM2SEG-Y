@@ -11,8 +11,7 @@ Instructions for using this are here:
 
 https://docs.google.com/document/d/1Elv19V3QclRzz9MhVqGacGvdHT4xERTr6etYUTFTpcA/edit?usp=sharing
 
-This package was previously written in python but managing a deprecated version of obspy became to cumbersome and the process was tyoo slow. The current implementation is much faster.
-
+This package is written in both python and Julia. Interestingly python is faster in the cases I tested as it seems to read text files much more quickly compared to Julia. Both languages rely on the segyio package.
 Contacts
 
 Neil Symington
