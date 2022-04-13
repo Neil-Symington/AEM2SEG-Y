@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="267c201a-c2c7-4c4f-a9d4-733ce5ca11b3" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/python/aem2segy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AEM2SEG-Y.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AEM2SEG-Y.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/aem2segy.jl" beforeDir="false" afterPath="$PROJECT_DIR$/src/julia/aem2segy.jl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/python/aem2segy.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/python/aem2segy.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,6 +111,14 @@
       <option name="presentableId" value="Default" />
       <updated>1557278579717</updated>
     </task>
+    <task id="LOCAL-00001" summary="implemented in python">
+      <created>1649639550626</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1649639550626</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -139,6 +143,10 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
     </layout>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="implemented in python" />
+    <option name="LAST_COMMIT_MESSAGE" value="implemented in python" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/aem2segy/aem2segy.py">
