@@ -1,109 +1,131 @@
+"""
+This script converts airborne electromagnetic (AEM) conductivity section data from a column based ascii format
+ ( such as ASEG-GDF) to SEG-Y format on a line-by-line basis.
+"""
+
 import numpy as np
-import segyio
 import os
+import glob
+import segyio
 
-# choose the vertical resampling interval
-yres = 4.0
-max_depth = 400.
-scaling = 0.001 # convert from mS/m to S/m
-##
-infile = r"C:\Users\u77932\Documents\GAB\data\AEM\2017_survey\lci\Injune_WB_MGA55.dat"
-outdir = r"C:\Users\u77932\Documents\GAB\data\AEM\2017_survey\lci\segy"
-
-# define column numbers with python indexing (i.e. columns 1 has index of 0)
-easting_col = 5
-northing_col = 6
-elevation_col =7
-line_col = 4
-conductivity_cols = [42,71] #range for 30 layer model;
-
-# depending on the inversion, the data may have thicknesses, layer_top_depths or layer_top_elevations
-# pick one and make the others = None
-thickness_cols = None
-layer_top_elevation_cols = [12,41]
-layer_top_depth_cols = None
-
-X = np.loadtxt(infile, usecols=[easting_col])
-Y = np.loadtxt(infile, usecols=[northing_col])
-Z = np.loadtxt(infile, usecols=[elevation_col])
-conductivity = np.loadtxt(infile, usecols=np.arange(conductivity_cols[0], conductivity_cols[1]+1)) * scaling
-
-if thickness_cols is not None:
-    thicknesses = np.loadtxt(infile, usecols=np.arange(thickness_cols[0],thickness_cols[1]+1))
-    layer_top_elevations = np.zeros(shape = conductivity.shape, dtype = float)
-    layer_top_elevations[:,0] = Z
-    layer_top_elevations[:,1:] = layer_top_elevations[:,0] - np.cumsum(thicknesses[:,-1])
-
-elif layer_top_elevation_cols is not None:
-    layer_top_elevations = np.loadtxt(infile, usecols=np.arange(layer_top_elevation_cols[0],
-                                                                layer_top_elevation_cols[1]+1))
-elif layer_top_depth_cols is not None:
-    layer_top_depths = np.loadtxt(infile, usecols=np.arange(layer_top_depth_cols[0],
-                                                            layer_top_depth_cols[1] + 1))
-    layer_top_elevations = Z - layer_top_depths
-else:
-    print("please define column numbers for one of thickness, layer top elevation or layer top depths")
+# Column indices (Note: These are 1-based indices, not zero-based as is typically used in python)
+EASTING_COL = 7  # Column for Easting coordinates (1-based index)
+NORTHING_COL = 8  # Column for Northing coordinates (1-based index)
+ELEVATION_COL = 11  # Column for Elevation data (1-based index)
+LINE_COL = 5  # Column for line numbers (1-based index)
+CONDUCTIVITY_COLS = [26, 55]  # Columns for conductivity data (1-based index range)
+THICKNESS_COLS = None # Adjust if using thickness of layers directly
+#THICKNESS_COLS = [56, 85]  # Columns for layer thickness data (1-based index range)
+LAYER_TOP_ELEVATION_COLS = None  # Adjust if using top elevation of layers directly
+#LAYER_TOP_DEPTH_COLS = None  # Adjust if using top depth of layers directly
+LAYER_TOP_DEPTH_COLS = [86, 115]
+Y_RES = 2.0  # Vertical resolution in the output SEG-Y file
+MAX_DEPTH = 400.0  # Maximum depth to be represented in the output SEG-Y file
+SCALING = 1.0  # scale data byt his factor depending on desired units (i.e. mS/m to S/m or ohm.m to S/m)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+INDIR = os.path.join(SCRIPT_DIR, '..', '..', 'data', 'lines') # or define absolute path here
+FILE_EXTENSION = "asc" # file extension for data files
+OUTDIR = r"..\..\data\segy"
+#INFILE = r"..\..\data\inversion.output"
+INFILE = None # if INFILE = None then the script assume multiple files in INDIR with a common extension
 
 
-lines = np.loadtxt(infile, usecols=[line_col]).astype(int)
+def thickness_to_depth(thickness):
+    """
+    Calculates depth top from a thickness array.
 
-##
+    :param thickness: An array of thicknesses.
+    :return: A flat array of depth.
+    """
+    layer_top_depth = np.zeros(shape=thickness.shape, dtype=float)
+    layer_top_depth[:, 1:] = np.cumsum(thickness[:, :-1], axis=1)
+    return layer_top_depth
 
-def get_line_indices(line):
-    inds = np.where(lines == line)[0]
-    return inds
 
-def line2segy(line_number):
-    # find our actual line indices
-    line_inds = get_line_indices(line_number)
+def line2segy(line_number, lines, easting, northing, elevation, conductivity, layer_top_elevations, outdir, yres, max_depth):
+    """
+    Converts line data to SEG-Y format.
 
-    easting = X[line_inds]
-    northing = Y[line_inds]
-    elevation = Z[line_inds]
-    layer_top_elevation = layer_top_elevations[line_inds]
-    sigma = conductivity[line_inds]
+    :param line_number: The number of the line being processed.
+    :param line: an array of line numbers
+    :param easting: Easting coordinates.
+    :param northing: Northing coordinates.
+    :param elevation: Elevation data.
+    :param conductivity: Conductivity data.
+    :param layer_top_elevations: Top elevations of layers.
+    :param outdir: Output directory.
+    :param yres: Vertical resolution.
+    :param max_depth: Maximum depth.
+    """
 
-    # our first step is to define our datum as 20 m above the highest point in survey
+    line_inds = np.where(lines == line_number)[0]
 
-    ymax = np.ceil(np.max(elevation)/10.) *10.
+    # Define top datum
+    ymax = np.ceil(np.max(elevation) / 10.0) * 10.0
+    ymin = np.floor(np.min(elevation) / 10.0) * 10.0 - max_depth
+    grid_elevations = np.arange(ymin, ymax + yres, yres)[::-1]
 
-    # create an elevation grid
+    interpolated = -1 * np.ones(shape=(len(grid_elevations), len(line_inds)), dtype=float)
 
-    ymin = np.floor(np.min(elevation)/10.)*10. - max_depth
-
-    grid_elevations = np.arange(ymin, ymax, yres)[::-1]
-
-    # get conductivity
-
-    ## create our array of interpolated AEM conductivity, negative indicates free air
-    interpolated = -1*np.ones(shape = (len(grid_elevations), len(line_inds)), dtype = float)
-
-    # iterate
     for i in range(len(line_inds)):
-
-        layer_top_elev = layer_top_elevation[i,:]
-
-        sigma_trace = sigma[i]
-        # iterate through our layers
+        layer_top_elev = layer_top_elevations[i, :]
+        sigma_trace = conductivity[i]
         for j in range(len(layer_top_elev) - 1):
             mask = (grid_elevations < layer_top_elev[j]) & (grid_elevations >= layer_top_elev[j + 1])
-            interpolated[mask,i] = sigma_trace[j]
+            interpolated[mask, i] = sigma_trace[j]
 
-    path = os.path.join(outdir, "{}.segy".format(line_number))
-    segyio.tools.from_array2D(path, interpolated.T, dt  = int(yres * 1e3), delrt=-1*int(ymax))
+    # Writing to SEG-Y
+    path = os.path.join(outdir, f"{line_number}.segy")
+    segyio.tools.from_array2D(path, interpolated.T, dt=int(yres * 1e3), delrt=-1 * int(ymax))
 
-    with segyio.open(path, mode = 'r+', ignore_geometry=True) as f:
+    with segyio.open(path, mode='r+', ignore_geometry=True) as f:
         for i, x in enumerate(f.header[:]):
-            x.update({segyio.TraceField.GroupX: int(easting[i])})
-            x.update({segyio.TraceField.SourceX: int(easting[i])})
-            x.update({segyio.TraceField.GroupY: int(northing[i])})
-            x.update({segyio.TraceField.SourceY: int(northing[i])})
-            x.update({segyio.TraceField.ElevationScalar: int(elevation[i])})
-            x.update({segyio.TraceField.ReceiverGroupElevation: int(elevation[i])})
+            x.update({segyio.TraceField.GroupX: int(easting[i]),
+                      segyio.TraceField.SourceX: int(easting[i]),
+                      segyio.TraceField.GroupY: int(northing[i]),
+                      segyio.TraceField.SourceY: int(northing[i]),
+                      segyio.TraceField.ElevationScalar: int(elevation[i]),
+                      segyio.TraceField.ReceiverGroupElevation: int(elevation[i])})
 
+def ascii2segy(file):
 
-for l in np.unique(lines):
+    """
+    Parse the text file and convert to segy.
 
-    if not str(l).startswith('9'): # avoid high-altitude lines
-        line2segy(l)
+    :param file: path to asci file.
+    """
+    data = np.loadtxt(file, skiprows=1)
+    X = data[:, EASTING_COL - 1]
+    Y = data[:, NORTHING_COL - 1]
+    Z = data[:, ELEVATION_COL - 1]
+    lines = data[:, LINE_COL - 1].astype(int)
+    conductivity = data[:,CONDUCTIVITY_COLS[0] - 1: CONDUCTIVITY_COLS[1]] * SCALING
+
+    if THICKNESS_COLS is not None:
+        thickness = data[:,THICKNESS_COLS[0] - 1:THICKNESS_COLS[1]]
+        layer_top_depth = thickness_to_depth(thickness)
+        layer_top_elevations = Z[:, np.newaxis] - layer_top_depth
+
+    elif LAYER_TOP_ELEVATION_COLS is not None:
+        layer_top_elevations = data[:,LAYER_TOP_ELEVATION_COLS[0] - 1:LAYER_TOP_ELEVATION_COLS[1]]
+        print(layer_top_elevations)
+
+    elif LAYER_TOP_DEPTH_COLS is not None:
+        layer_top_depth = data[:,LAYER_TOP_DEPTH_COLS[0] - 1: LAYER_TOP_DEPTH_COLS[1]]
+        layer_top_elevations = Z[:, np.newaxis] - layer_top_depth
+
+    for line_number in np.unique(lines):
+        line2segy(line_number, lines, X, Y, Z, conductivity, layer_top_elevations, OUTDIR, Y_RES, MAX_DEPTH)
+
+# Main execution
+if not os.path.exists(OUTDIR):
+    os.makedirs(OUTDIR)
+
+if not INFILE is None:
+    ascii2segy(INFILE)
+else:
+    for file in glob.glob(os.path.join(INDIR, "*.{}".format(FILE_EXTENSION))):
+        print(file)
+        ascii2segy(file)
+
 

@@ -68,8 +68,8 @@ yres = 4.0;
 max_depth = 500.;
 
 ##
-indir = raw"C:\Users\u77932\Documents\LEB\data\AEM\Frome\galei\lines2";
-outdir = raw"C:\Users\u77932\Documents\LEB\data\AEM\Frome\galei\segy";
+indir = raw"INSERT_PATH_HERE";
+outdir = raw"INSERT_PATH_HERE";
 
 cd(indir);
 files = readdir();
@@ -79,8 +79,8 @@ files = readdir();
 easting_col = 7;
 northing_col = 8;
 elevation_col = 9;
-conductivity_cols = [24,53] #ranger for 30 layer model;
-thickness_cols = [54,83];
+conductivity_cols = [25,54] #ranger for 30 layer model;
+thickness_cols = [55,84];
 #layer_top_elevation_cols = [14 43]
 line_col = 5;
 

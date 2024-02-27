@@ -7,8 +7,8 @@ yres = 4.0;
 max_depth = 500.;
 
 ##
-infile = raw"C:\Users\u77932\Documents\LEB\data\AEM\Frome\galei\lines\Frome_LEB_galei.dat";
-outdir = raw"C:\Users\u77932\Documents\LEB\data\AEM\Frome\galei\segy";
+infile = raw"INSERT_PATH_HERE";
+outdir = raw"INSERT_PATH_HERE";
 
 inversion_output = readdlm(infile, Float64);
 

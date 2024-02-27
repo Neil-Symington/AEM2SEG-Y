@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="267c201a-c2c7-4c4f-a9d4-733ce5ca11b3" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/data/lines/3134001.asc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/lines/3135001.asc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/julia/aem2segy.jl" beforeDir="false" afterPath="$PROJECT_DIR$/src/julia/aem2segy.jl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/julia/aem2segy_line.jl" beforeDir="false" afterPath="$PROJECT_DIR$/src/julia/aem2segy_line.jl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/python/aem2segy.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/python/aem2segy.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,6 +53,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-21" />
     <option name="y" value="57" />
@@ -88,14 +96,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "C:/Users/u77932/PycharmProjects/AEM2SEG-Y/src/python/lines",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  }
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\u77932\PycharmProjects\AEM2SEG-Y\src\python\lines" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\u77932\PycharmProjects\AEM2SEG-Y\src\python\old" />
+      <recent name="C:\Users\u77932\PycharmProjects\AEM2SEG-Y\data" />
       <recent name="C:\Users\u77932\PycharmProjects\AEM2SEG-Y\src\julia" />
     </key>
   </component>
@@ -118,7 +131,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649639550626</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="add elevation top functionality">
+      <created>1649823892785</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1649823892785</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -146,7 +166,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="implemented in python" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented in python" />
+    <MESSAGE value="add elevation top functionality" />
+    <option name="LAST_COMMIT_MESSAGE" value="add elevation top functionality" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/aem2segy/aem2segy.py">
